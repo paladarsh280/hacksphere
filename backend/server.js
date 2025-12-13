@@ -28,10 +28,7 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 
-// Optional: 404 handler
-app.use("*", (req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

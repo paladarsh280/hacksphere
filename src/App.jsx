@@ -4,6 +4,7 @@ import IntroPage from "./pages/IntroPage";
 import Check from "./pages/Check";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import VerifyOtp from "./pages/VerifyOtp";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/check" element={<Check />} />
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<SignUp/>}/>
+           <Route path="/verify-otp" element={<VerifyOtp/>}/>
         </Routes>
       </div>
     </>

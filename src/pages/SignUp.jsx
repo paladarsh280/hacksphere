@@ -52,7 +52,7 @@ export default function SignUp() {
         throw new Error(data.message || "Signup failed");
       }
 
-      navigate("/login");
+   navigate("/verify-otp", { state: { email: formData.email } });
     } catch (err) {
       setError(err.message);
     } finally {
