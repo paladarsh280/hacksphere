@@ -20,6 +20,7 @@
     "firebase": "^12.6.0",
     "firebase-admin": "^13.6.0",
     "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.561.0",
     "mongoose": "^9.0.1",
     "nodemailer": "^7.0.11",
     "react": "^19.2.0",

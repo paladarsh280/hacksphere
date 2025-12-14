@@ -190,8 +190,8 @@ const Signup = () => {
          
         </div>
 
-        <h1 className="text-gray-900 text-3xl font-bold mb-1">Travel With Us</h1>
-        <p className="text-gray-600 text-lg font-medium mb-3">Join us today</p>
+        <h1 className="text-gray-900 text-3xl font-bold mb-1">Togethra</h1>
+        
 
         {/* STEP 1 — SIGNUP FORM */}
         {step === 1 && (

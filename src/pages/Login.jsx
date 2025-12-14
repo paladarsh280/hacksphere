@@ -82,7 +82,7 @@ const Login = () => {
       );
 
       saveAuthToken(res.data.token);
-      navigate("/");
+      navigate("/memory-form");
     } catch (err) {
       console.log("OTP Verify Error:", err.response?.data || err.message);
       setMessage(
@@ -121,7 +121,7 @@ const Login = () => {
       );
 
       saveAuthToken(res.data.token);
-      navigate("/");
+      navigate("/memory-form");
     } catch (err) {
       console.log("Google Login Error:", err);
       setMessage("Google login failed. Try again.");

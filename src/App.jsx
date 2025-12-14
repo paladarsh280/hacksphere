@@ -8,6 +8,8 @@ import VerifyOtp from "./pages/VerifyOtp";
 import EnterOtp from "./pages/EnterOtp";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import MemoryForm from "./pages/MemoryForm";
+import MyMemories from "./pages/MyMemories";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   return (
@@ -23,6 +25,8 @@ function App() {
            <Route path="/enter-otp" element={<EnterOtp/>}/>
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+         <Route path="/memory-form" element={<MemoryForm />} />
+          <Route path="/my-memory" element={<MyMemories/>} />
         </Routes>
       </div>
     </>
