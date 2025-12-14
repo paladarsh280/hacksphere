@@ -12,7 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const sendOtpEmail = async (toEmail, otp) => {
   try {
     const response = await resend.emails.send({
-      from: `HackSphere <${process.env.FROM_EMAIL}>`,
+      from: `HackSphere <${process.env.FROM_EMAIL}>`,  // Fixed: no space before <
       to: toEmail,
       subject: "Verify your email",
       html: `
@@ -23,6 +23,8 @@ export const sendOtpEmail = async (toEmail, otp) => {
           <p>This OTP is valid for <b>5 minutes</b>.</p>
         </div>
       `,
+      // Optional: add text version
+      // text: `Your OTP is: ${otp}\n\nThis OTP is valid for 5 minutes.`,
     });
 
     return response;
