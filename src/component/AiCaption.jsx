@@ -20,7 +20,7 @@ export default function AiCaptionBox({ memoryText, onSelect }) {
           { text: memoryText }
         );
 
-        setCaptions(res.data.captions || []);
+        setCaptions(res.data.captions || ["This was the day we all sat together laughing until midnight."]);
       } catch (err) {
         console.error("AI caption error:", err);
         setCaptions([]);
