@@ -1,182 +1,334 @@
-import React, { useState } from "react";
-import authenticationbg from "../assets/authenticationbg.jpg";
-import { useNavigate } from "react-router-dom";
 
-export default function SignUp() {
+
+
+
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+     
+import authenticationbg from "../assets/authenticationbg.jpg";
+
+
+import axios from "axios";
+import { useAuth } from "../context/AuthContext.jsx";
+import { signInWithGoogle } from "../firebase";
+
+const Signup = () => {
+  const { saveAuthToken } = useAuth();
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState(1); // 1 = signup, 2 = otp verify
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [otp, setOtp] = useState("");
+  const [message, setMessage] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // update inputs
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-const handleSubmit = async () => {
-  if (loading) return;
+  // STEP 1 → Submit basic info → Backend sends OTP
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-  setError("");
+  //   if (formData.password !== formData.confirmPassword) {
+  //     setMessage("Passwords do not match!");
+  //     return;
+  //   }
 
-  if (!formData.name || !formData.email || !formData.password) {
-    setError("All fields are required");
-    return;
-  }
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:5000/api/auth/register",
+  //       {
+  //         name: formData.name,
+  //         email: formData.email,
+  //         password: formData.password,
+  //       }
+  //     );
+
+  //     if (res.data?.message === "OTP sent to email") {
+  //       setMessage("OTP sent to your email!");
+  //       setStep(2); // show OTP screen
+  //     }
+  //   } catch (error) {
+  //     setMessage(error.response?.data?.message || "Signup failed.");
+  //   }
+  // };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
   if (formData.password !== formData.confirmPassword) {
-    setError("Passwords do not match");
+    setMessage("Passwords do not match!");
     return;
   }
 
-  setLoading(true);
-
   try {
-    const res = await fetch(
-      "https://hacksphere-e64m.onrender.com/api/auth/signup",
+    const res = await axios.post(
+      "https://hacksphere-e64m.onrender.com/api/auth/register",
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
       }
     );
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Signup failed");
+    if (res.data?.message === "OTP sent to email") {
+      // SAVE EMAIL NOW — BEFORE GOING TO OTP SCREEN
+      localStorage.setItem("emailForOTP", formData.email);
 
-    navigate("/verify-otp", { state: { email: formData.email } });
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
+      setMessage("OTP sent to your email!");
+      setStep(2); // show OTP screen
+    }
+  } catch (error) {
+    setMessage(error.response?.data?.message || "Signup failed.");
   }
 };
 
- 
+
+  // STEP 2 → Verify OTP
+  // const handleVerifyOTP = async (e) => {
+  //   e.preventDefault();
+  //   console.log("otp clicked");
+  //   localStorage.setItem("emailForOTP", formData.email);
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:5000/api/auth/verify-signup",
+  //       {
+  //         email: email,
+  //         otp: otp,
+  //       }
+      
+  //     );
+
+  //     if (res.data.token) {
+  //       saveAuthToken(res.data.token);
+  //       setMessage("Signup successful! Redirecting...");
+  //       setTimeout(() => navigate("/loggedlanding"), 800);
+  //     }
+  //   } catch (err) {
+  //     setMessage("Invalid OTP. Try again.");
+  //   }
+  // };
+  const handleVerifyOTP = async (e) => {
+  e.preventDefault();
+  console.log("otp clicked");
+
+  // RETRIEVE EMAIL
+  const email = localStorage.getItem("emailForOTP");
+ console.log({email});
+  if (!email) {
+    setMessage("Error: No email found. Please register again.");
+    return;
+  }
+
+  try {
+    const res = await axios.post(
+      "https://hacksphere-e64m.onrender.com/api/auth/verify-signup",
+      {
+          email: email,   // FIXED
+          otp: otp,
+      }
+    );
+
+    if (res.data.token) {
+      saveAuthToken(res.data.token);
+      setMessage("Signup successful! Redirecting...");
+      setTimeout(() => navigate("/loggedlanding"), 800);
+    }
+  } catch (err) {
+    setMessage("Invalid OTP. Try again.");
+  }
+};
+
+
+  // GOOGLE LOGIN
+  const handleGoogleLogin = async () => {
+    const user = await signInWithGoogle();
+    if (!user) return;
+
+    const googleData = {
+      name: user.displayName,
+      email: user.email,
+      photo: user.photoURL,
+    };
+
+    try {
+      const res = await axios.post(
+        "https://hacksphere-e64m.onrender.com/api/auth/google-login",
+        googleData
+      );
+
+      saveAuthToken(res.data.token);
+      navigate("/loggedlanding");
+    } catch (err) {
+      console.log("DB Save Error:", err);
+    }
+  };
 
   return (
     <div
-      className="min-h-screen relative flex items-center justify-center p-4"
-      style={{
-        backgroundImage: `url(${authenticationbg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed"
-      }}
+      className="relative h-screen w-screen flex items-center justify-center bg-cover bg-[40%_33%] bg-no-repeat"
+      style={{ backgroundImage: `url(${authenticationbg})` }}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 backdrop-blur-sm bg-black/10"></div>
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
 
-      {/* Sign Up Card */}
-      <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Create Account
-          </h1>
-          <p className="text-gray-600">Sign up to get started</p>
+      <div className="relative z-10 w-[90%] max-w-lg bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl p-2 flex flex-col items-center max-h-[95vh] overflow-auto">
+        {/* Logo */}
+        <div className="flex justify-center">
+         
         </div>
 
-        {/* Google Sign Up Button */}
+        <h1 className="text-gray-900 text-3xl font-bold mb-1">Travel With Us</h1>
+        <p className="text-gray-600 text-lg font-medium mb-3">Join us today</p>
+
+        {/* STEP 1 — SIGNUP FORM */}
+        {step === 1 && (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 w-full max-w-sm"
+          >
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg text-sm"
+              required
+            />
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email or phone number"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg text-sm"
+              required
+            />
+
+            {/* Password */}
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg text-sm"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+                onMouseDown={() => setShowPassword(true)}
+                onMouseUp={() => setShowPassword(false)}
+                onMouseLeave={() => setShowPassword(false)}
+              >
+                👁
+              </button>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg text-sm"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+                onMouseDown={() => setShowConfirmPassword(true)}
+                onMouseUp={() => setShowConfirmPassword(false)}
+                onMouseLeave={() => setShowConfirmPassword(false)}
+              >
+                👁
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-black text-white rounded-lg py-3 font-semibold"
+            >
+              Sign Up
+            </button>
+          </form>
+        )}
+
+        {/* STEP 2 — OTP SCREEN */}
+        {step === 2 && (
+          <form
+            onSubmit={handleVerifyOTP}
+            className="flex flex-col gap-4 w-full max-w-sm"
+          >
+            <h2 className="text-xl font-semibold text-center">
+              Enter OTP sent to your email
+            </h2>
+
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg text-sm"
+              required
+            />
+
+            <button
+              type="submit"
+              className="w-full bg-black text-white rounded-lg py-3 font-semibold"
+            >
+              Verify OTP
+            </button>
+          </form>
+        )}
+
+        {message && (
+          <p className="mt-4 text-blue-600 text-sm text-center">{message}</p>
+        )}
+
+        {/* Google Signup */}
         <button
-          
-          className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 rounded-lg py-3 px-4 mb-6 hover:bg-gray-50"
+          onClick={handleGoogleLogin}
+          className="mt-[20px] flex justify-center items-center border border-gray-300 rounded-full bg-white text-[17px] mb-5 w-80 h-11 shadow-sm"
         >
-          <span className="font-medium text-gray-700">
-            Continue with Google
-          </span>
+          
+          Sign up with Google
         </button>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex-1 border-t border-gray-300"></div>
-          <span className="text-gray-500 text-sm">OR</span>
-          <div className="flex-1 border-t border-gray-300"></div>
-        </div>
+        {/* Login Link */}
+        <div className="flex flex-col items-center w-full mt-2">
+          <p className="text-gray-700 text-[16px] mb-2">
+            Already have an account?
+          </p>
 
-        {/* Sign Up Form */}
-        <div className="space-y-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg"
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg"
-          />
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border rounded-lg"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 text-gray-500"
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg"
-          />
-
-          {error && (
-            <p className="text-red-600 text-sm text-center">{error}</p>
-          )}
-
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 rounded-lg"
+          <Link
+            to="/login"
+            className="w-20 h-8 mb-8 flex items-center justify-center bg-black text-white rounded-xl font-semibold"
           >
-            {loading ? "Creating account..." : "Sign Up"}
-          </button>
+            Log in
+          </Link>
         </div>
-
-        {/* Sign In Link */}
-        <p className="text-center text-gray-600 mt-6">
-          Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-purple-600 font-semibold hover:text-purple-700"
-          >
-            Sign In
-          </a>
-        </p>
       </div>
     </div>
   );
-}
+};
+
+export default Signup;

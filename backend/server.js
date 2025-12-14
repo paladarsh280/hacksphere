@@ -1,38 +1,33 @@
+import dotenv from "dotenv";
+dotenv.config(); 
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import authRoutes from "./routes/auth.js";
 
-dotenv.config();
+import connectDB from "./config/db.js"; // make sure this path is correct
+
+import authRoutes from "./routes/authRoutes.js";
+
+
+
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://togethera.netlify.app"
-];
+// Connect to MongoDB
+connectDB(); 
 
+
+// CORS
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("Not allowed by CORS"));
-  },
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+     origin: ["http://localhost:5173","https://togethera.netlify.app", "https://traveela.onrender.com"],
+    credentials: true
 }));
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch(console.error);
-
+// Routes
 app.use("/api/auth", authRoutes);
 
+
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () =>
-  console.log("Server running on", PORT)
-);
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
