@@ -17,7 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import CollaboratorInput from "../component/CollaboratorInput";
 import memoriesformbg from "../assets/memoriesformbg.jpg";
-import AICaptionBox from "../component/AiCaptionBox";
+import AiCaptionBox from "../component/AiCaptionBox";
 export default function MemoryForm() {
   const [memoryText, setMemoryText] = useState("");
 const [selectedCaption, setSelectedCaption] = useState("");
@@ -192,7 +192,7 @@ formData.set("caption", selectedCaption);
 />
 
 {/* AI CAPTIONS */}
-<AICaptionBox
+<AiCaptionBox
   memoryText={memoryText}
   onSelect={(caption) => setSelectedCaption(caption)}
 />

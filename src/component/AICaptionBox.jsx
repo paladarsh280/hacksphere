@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Sparkles } from "lucide-react";
 
-export default function AICaptionBox({ memoryText, onSelect }) {
+export default function AiCaptionBox({ memoryText, onSelect }) {
   const [captions, setCaptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
