@@ -323,3 +323,110 @@ export const sendPasswordChangedEmail = async (email) => {
     // Don't throw - this is optional notification
   }
 };
+
+
+
+
+
+
+
+export const sendUnlockEmail = async (email, memory) => {
+  try {
+    // Safety check (DO NOT THROW)
+    if (!email || typeof email !== "string") {
+      console.warn("⚠️ Unlock email skipped: invalid email", email);
+      return;
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM,
+      to: email, // ✅ string only
+      subject: "🎉 A Memory Capsule Has Been Unlocked!",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <body style="font-family: Arial, sans-serif; background:#f4f7fa; padding:20px;">
+          <div style="max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:10px;">
+            <h2 style="color:#333;">Your memory is now available 🎉</h2>
+            <p style="color:#555;">
+              ${memory?.text || "A private memory was shared with you."}
+            </p>
+            <p style="margin-top:20px;">
+              <strong>Login to view the full memory.</strong>
+            </p>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("⚠️ Resend unlock email error:", error);
+      return;
+    }
+
+    console.log("✅ Unlock email sent:", data?.id);
+    return data;
+
+  } catch (err) {
+    console.error("⚠️ Unlock email failed:", err.message);
+    // ❗ DO NOT throw
+  }
+};
+
+
+export const sendCollabInviteEmail = async (email, memory) => {
+  try {
+    // Safety check (DO NOT THROW)
+    if (!email || typeof email !== "string") {
+      console.warn("⚠️ Collaboration invite skipped: invalid email", email);
+      return;
+    }
+
+    if (!memory || !memory._id) {
+      console.warn("⚠️ Collaboration invite skipped: invalid memory object", memory);
+      return;
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || "Memory Capsule <onboarding@resend.dev>",
+      to: email, // ✅ string only
+      subject: "👨‍👩‍👧 You’re invited to collaborate on a memory",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <body style="font-family: Arial, sans-serif; background:#f4f7fa; padding:20px;">
+          <div style="max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:10px;">
+            <h2 style="color:#333;">You've been invited to collaborate! 🎉</h2>
+            <p style="color:#555;">
+              ${memory?.text || "A private memory has been shared with you."}
+            </p>
+            <p style="margin-top:20px;">
+              <strong>Click the button below to accept the invitation:</strong>
+            </p>
+            <a 
+              href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/accept-collab/${memory._id}?email=${encodeURIComponent(email)}" 
+              style="display:inline-block;margin-top:10px;padding:10px 20px;background:#4f46e5;color:#fff;border-radius:5px;text-decoration:none;"
+            >
+              Accept Invitation
+            </a>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("⚠️ Resend collaboration invite error:", error);
+      return;
+    }
+
+    console.log("✅ Collaboration invite sent:", data?.id);
+    return data;
+
+  } catch (err) {
+    console.error("⚠️ Collaboration invite failed:", err.message);
+    // ❗ DO NOT throw
+  }
+};
+
