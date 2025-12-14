@@ -121,7 +121,7 @@ export default function MemoryForm() {
 
     } catch (err) {
       console.error(err);
-      alert("Memory creation failed");
+      
     } finally {
       setIsSubmitting(false);
     }
