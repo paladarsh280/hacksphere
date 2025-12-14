@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CollaboratorInput from "../component/CollaboratorInput";
-
+import memoriesformbg from "../assets/memoriesformbg.jpg";
 export default function MemoryForm() {
   const [imageFiles, setImageFiles] = useState([]);
   const [audioFiles, setAudioFiles] = useState([]);
@@ -151,7 +151,9 @@ export default function MemoryForm() {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-12 px-4"  
+    style={{ backgroundImage: `url(${memoriesformbg})` }}
+    >
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -410,66 +412,7 @@ export default function MemoryForm() {
           </div>
 
           {/* Collaborators Card */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={addCollaborators}
-                  onChange={() => setAddCollaborators(!addCollaborators)}
-                  className="w-5 h-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
-                />
-                <span className="text-lg font-bold text-gray-800">Add Collaborators</span>
-              </label>
-            </div>
-
-            {addCollaborators && (
-              <div className="pt-4 border-t border-gray-200 space-y-4">
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={collaboratorInput}
-                    placeholder="Enter collaborator email"
-                    onChange={(e) => setCollaboratorInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addCollaborator();
-                      }
-                    }}
-                    className="flex-1 border-2 border-gray-200 p-3 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={addCollaborator}
-                    className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors font-medium"
-                  >
-                    Add
-                  </button>
-                </div>
-
-                {collaboratorEmails.length > 0 && (
-                  <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-xl">
-                    {collaboratorEmails.map((email, i) => (
-                      <span
-                        key={i}
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md"
-                      >
-                        {email}
-                        <button
-                          type="button"
-                          onClick={() => removeCollaborator(i)}
-                          className="hover:bg-white hover:bg-opacity-20 rounded-full p-0.5 transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+      
 
           {/* Submit Button */}
           <button

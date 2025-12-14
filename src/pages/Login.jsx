@@ -1,12 +1,5 @@
 
 
-
-
-
-
-
-
-
 import React, { useState } from "react";
 import authenticationbg from "../assets/authenticationbg.jpg";
 

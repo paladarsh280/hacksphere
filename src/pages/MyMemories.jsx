@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Image, Music, Video, Clock, Calendar } from "lucide-react";
-
+import memoriesbg from "../assets/memoriesbg.jpg"
 export default function MyMemories() {
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,9 @@ const getRemainingTime = (unlockDate) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center"  
+      
+      >
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent"></div>
           <p className="mt-4 text-gray-600 font-medium">Loading your memories...</p>
@@ -62,7 +64,9 @@ const getRemainingTime = (unlockDate) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen  from-purple-50 via-pink-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8" 
+    style={{ backgroundImage: `url(${memoriesbg})` }}
+    >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
