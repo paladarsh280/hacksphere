@@ -24,7 +24,8 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.options("*", cors()); // 🔑 REQUIRED
+// ✅ FIXED HERE
+app.options("(.*)", cors());
 
 app.use(express.json());
 
