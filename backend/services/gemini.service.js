@@ -7,7 +7,7 @@ const client = new GoogleGenAI({
 export const generateCaptions = async (prompt) => {
   try {
     const response = await client.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: prompt,
     });
 
