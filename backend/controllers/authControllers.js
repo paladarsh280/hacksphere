@@ -1,122 +1,76 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import { Resend } from "resend";
+import { sendOtpEmail } from "../services/emailService.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Generate OTP
 const generateOtp = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
-/* SIGNUP + SEND OTP */
+/* SIGNUP */
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     const exists = await User.findOne({ email });
-    if (exists)
-      return res.status(400).json({ message: "User already exists" });
+    if (exists) return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = generateOtp();
 
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
       otp,
       otpExpiry: new Date(Date.now() + 5 * 60 * 1000),
-      isVerified: false,
     });
 
-   await resend.emails.send({
-  from: `HackSphere <${process.env.FROM_EMAIL}>`,
-  to: email,                     // 🔥 USER EMAIL (Gmail, etc.)
-  subject: "Verify your email",
-  html: `
-    <h2>Email Verification</h2>
-    <p>Your OTP:</p>
-    <h1>${otp}</h1>
-    <p>Valid for 5 minutes</p>
-  `,
-});
+    await sendOtpEmail(email, otp);
 
-
-    res.json({
-      message: "Signup successful. OTP sent to email.",
-    });
+    res.json({ message: "OTP sent to email" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-/* VERIFY OTP (ONLY FOR SIGNUP) */
+/* VERIFY OTP */
 export const verifySignupOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
 
-    if (!email || !otp) {
-      return res.status(400).json({
-        message: "Email and OTP are required"
-      });
-    }
-
     const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(400).json({
-        message: "User not found"
-      });
-    }
+    if (user.isVerified)
+      return res.status(400).json({ message: "Already verified" });
 
-    if (user.isVerified) {
-      return res.status(400).json({
-        message: "User already verified"
-      });
-    }
+    if (user.otp !== otp)
+      return res.status(400).json({ message: "Invalid OTP" });
 
-    if (user.otp !== otp) {
-      return res.status(400).json({
-        message: "Invalid OTP"
-      });
-    }
-
-    if (user.otpExpires < Date.now()) {
-      return res.status(400).json({
-        message: "OTP expired"
-      });
-    }
+    if (user.otpExpiry < Date.now())
+      return res.status(400).json({ message: "OTP expired" });
 
     user.isVerified = true;
     user.otp = undefined;
-    user.otpExpires = undefined;
-
+    user.otpExpiry = undefined;
     await user.save();
 
-    res.status(200).json({
-      message: "Signup verified successfully"
-    });
+    res.json({ message: "Email verified successfully" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-/* LOGIN (PASSWORD ONLY) */
+/* LOGIN */
 export const login = async (req, res) => {
   try {
-   const { email, password } = req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(400).json({ message: "User not found" });
+    if (!user) return res.status(400).json({ message: "User not found" });
 
     if (!user.isVerified)
-      return res.status(403).json({ message: "Please verify email first" });
+      return res.status(403).json({ message: "Verify email first" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
