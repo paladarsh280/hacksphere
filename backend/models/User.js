@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   },
 
   otp: String,
-  otpExpiry: Date,
+  otpExpires: new Date(Date.now() + 5 * 60 * 1000),
 
   isVerified: {
     type: Boolean,

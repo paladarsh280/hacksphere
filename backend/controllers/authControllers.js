@@ -33,17 +33,18 @@ export const signup = async (req, res) => {
       isVerified: false,
     });
 
-    await resend.emails.send({
-      from: `HackSphere <${process.env.FROM_EMAIL}>`,
-      to: email,
-      subject: "Verify your email",
-      html: `
-        <h2>Email Verification</h2>
-        <p>Your OTP:</p>
-        <h1>${otp}</h1>
-        <p>Valid for 5 minutes</p>
-      `,
-    });
+   await resend.emails.send({
+  from: `HackSphere <${process.env.FROM_EMAIL}>`,
+  to: email,                     // 🔥 USER EMAIL (Gmail, etc.)
+  subject: "Verify your email",
+  html: `
+    <h2>Email Verification</h2>
+    <p>Your OTP:</p>
+    <h1>${otp}</h1>
+    <p>Valid for 5 minutes</p>
+  `,
+});
+
 
     res.json({
       message: "Signup successful. OTP sent to email.",
