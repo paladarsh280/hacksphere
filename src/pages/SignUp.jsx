@@ -190,7 +190,7 @@ const Signup = () => {
          
         </div>
 
-        <h1 className="text-gray-900 text-3xl font-bold mb-1">Togethra</h1>
+        <h1 className="text-gray-900 text-3xl font-bold mb-1">Togethera</h1>
         
 
         {/* STEP 1 — SIGNUP FORM */}
