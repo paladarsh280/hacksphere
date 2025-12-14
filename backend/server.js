@@ -25,7 +25,7 @@ connectDB();
 
 // CORS
 app.use(cors({
-     origin: ["http://localhost:5173","https://togethera.netlify.app", "https://traveela.onrender.com","https://hacksphere-gp6y4nq1k-adarsh-kumars-projects-4b2dc3a9.vercel.app"],
+     origin: ["http://localhost:5173","https://togethera.netlify.app", "https://traveela.onrender.com","https://hacksphere-mu.vercel.app"],
     credentials: true
 }));
 
