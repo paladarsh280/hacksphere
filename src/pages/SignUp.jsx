@@ -23,42 +23,47 @@ export default function SignUp() {
     });
   };
 
-  const handleSubmit = async () => {
-    setError("");
+const handleSubmit = async () => {
+  if (loading) return;
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  setError("");
 
-    setLoading(true);
+  if (!formData.name || !formData.email || !formData.password) {
+    setError("All fields are required");
+    return;
+  }
 
-    try {
-      const res = await fetch("https://hacksphere-e64m.onrender.com/api/auth/signup", {
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(
+      "https://hacksphere-e64m.onrender.com/api/auth/signup",
+      {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          password: formData.password
-        })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Signup failed");
+          password: formData.password,
+        }),
       }
+    );
 
-   navigate("/verify-otp", { state: { email: formData.email } });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Signup failed");
+
+    navigate("/verify-otp", { state: { email: formData.email } });
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
  
 

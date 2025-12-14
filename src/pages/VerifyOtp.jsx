@@ -7,25 +7,37 @@ export default function VerifyOtp() {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
 
-  const handleVerify = async () => {
-    try {
-      const res = await fetch(
-        "https://hacksphere-e64m.onrender.com/api/auth/verify-signup-otp",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: state.email, otp }),
-        }
-      );
+const handleVerify = async () => {
+  setError("");
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+  try {
+    const res = await fetch(
+      "https://hacksphere-e64m.onrender.com/api/auth/verify-signup-otp",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: location.state.email, // 🔑 REQUIRED
+          otp
+        })
+      }
+    );
 
-      navigate("/login");
-    } catch (err) {
-      setError(err.message);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message);
     }
-  };
+
+    navigate("/login");
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
+
 
   return (
     <div>
