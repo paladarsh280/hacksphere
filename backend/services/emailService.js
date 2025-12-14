@@ -29,7 +29,7 @@ const getOTPTemplate = (otp) => {
           <tr>
             <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); border-radius: 16px 16px 0 0;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
-                Togethra
+                Togethera
               </h1>
               <p style="margin: 10px 0 0; color: #ffe6f0; font-size: 14px;">
                 Preserve Moments. Share Emotions. Stay Together.
@@ -63,7 +63,7 @@ const getOTPTemplate = (otp) => {
               <div style="background-color: #fff3f6; border-left: 4px solid #ff4d6d; padding: 15px; border-radius: 4px; margin: 30px 0;">
                 <p style="margin: 0; color: #a61e4d; font-size: 14px;">
                   🔐 <strong>Security Reminder:</strong> Never share this OTP with anyone.
-                  Togethra will never ask for your verification code.
+                  Togethera will never ask for your verification code.
                 </p>
               </div>
 
@@ -77,10 +77,10 @@ const getOTPTemplate = (otp) => {
           <tr>
             <td style="padding: 30px 40px; background-color: #f8f9fa; border-radius: 0 0 16px 16px; text-align: center;">
               <p style="margin: 0 0 10px; color: #999999; font-size: 14px;">
-                © ${new Date().getFullYear()} Togethra. All rights reserved.
+                © ${new Date().getFullYear()} Togethera. All rights reserved.
               </p>
               <p style="margin: 0; color: #999999; font-size: 12px;">
-                Sharing life’s moments with love 💗 | support@togethra.com
+                Sharing life’s moments with love 💗 | support@togethera.com
               </p>
             </td>
           </tr>
@@ -101,7 +101,7 @@ export const sendOTP = async (to, otp) => {
     const data = await resend.emails.send({
       from: process.env.EMAIL_FROM,
       to,
-      subject: "🔐 Your Traveela Verification Code",
+      subject: "🔐 Your togethera Verification Code",
       html: getOTPTemplate(otp),
     });
 
@@ -437,7 +437,7 @@ export const sendCollabInviteEmail = async (email, memory) => {
 
     <!-- Soft Explanation -->
     <p style="color:#777; font-size:15px; line-height:1.6; text-align:center; margin:0 0 34px;">
-      By accepting this invitation, you’ll be able to view, add to, and protect this memory together —
+      By accepting this invitation, you’ll be able to view, add to, and protect this memory togethera —
       just like moments are meant to be shared.
     </p>
 
