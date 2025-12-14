@@ -17,7 +17,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import CollaboratorInput from "../component/CollaboratorInput";
 import memoriesformbg from "../assets/memoriesformbg.jpg";
+import AICaptionBox from "../component/AiCaptionBox";
 export default function MemoryForm() {
+  const [memoryText, setMemoryText] = useState("");
+const [selectedCaption, setSelectedCaption] = useState("");
   const [imageFiles, setImageFiles] = useState([]);
   const [audioFiles, setAudioFiles] = useState([]);
   const [videoFiles, setVideoFiles] = useState([]);
@@ -96,6 +99,8 @@ export default function MemoryForm() {
       setIsSubmitting(false);
       return;
     }
+   formData.set("text", memoryText);
+formData.set("caption", selectedCaption);
 
     try {
       await axios.post(
@@ -126,6 +131,8 @@ export default function MemoryForm() {
       setIsSubmitting(false);
     }
   };
+
+
 
   /* ---------------- RECIPIENT HANDLERS ---------------- */
   const addRecipient = () => {
@@ -175,12 +182,31 @@ export default function MemoryForm() {
                 <FileText className="w-4 h-4 text-purple-600" />
                 Your Memory
               </label>
-              <textarea
-                name="text"
-                rows="6"
-                placeholder="Write your memory here... Share your thoughts, feelings, or a special message for the future."
-                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all resize-none"
-              />
+             <textarea
+   value={memoryText}
+  onChange={(e) => setMemoryText(e.target.value)}
+  
+ rows="6"
+  placeholder="Write your memory here..."
+  className="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all resize-none"
+/>
+
+{/* AI CAPTIONS */}
+<AICaptionBox
+  memoryText={memoryText}
+  onSelect={(caption) => setSelectedCaption(caption)}
+/>
+
+{/* Selected Caption */}
+{selectedCaption && (
+  <div className="mt-3 p-3 bg-green-50 border border-green-300 rounded-lg">
+    <p className="text-sm font-semibold text-green-700">
+      Selected Caption:
+    </p>
+    <p className="text-green-800">{selectedCaption}</p>
+  </div>
+)}
+
             </div>
 
             {/* Collection Title */}

@@ -11,6 +11,7 @@ import connectDB from "./config/db.js"; // make sure this path is correct
 import authRoutes from "./routes/authRoutes.js";
 import memoryRoutes from "./routes/memoryRoutes.js";
 import collectionRoutes from "./routes/collectionRoutes.js"
+import geminiRoutes from "./routes/geminiRoutes.js"
 // Every minute (for demo)
 
 startUnlockCron();
@@ -37,6 +38,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/memory", memoryRoutes);
 app.use("/api/collections", collectionRoutes);
 
+app.use("/api/ai", geminiRoutes);
 // Start server
 const PORT = process.env.PORT || 5000;
 

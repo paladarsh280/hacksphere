@@ -3,6 +3,7 @@ import { isLoggedIn } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
 import { createMemory, getMyMemories } from "../controllers/memoryController.js";
 import { unlockByEvent } from "../controllers/memoryController.js";
+import { saveMemory } from "../controllers/memoryController.js";
 const router = express.Router();
 
 router.post(
@@ -17,7 +18,7 @@ router.post(
 );
 
 router.get("/my", isLoggedIn, getMyMemories);
-
+router.post("/save", saveMemory);
 router.post("/unlock-event", isLoggedIn, unlockByEvent);
 
 router.get("/accept-collab/:id", async (req, res) => {

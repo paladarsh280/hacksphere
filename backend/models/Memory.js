@@ -60,6 +60,10 @@ const memorySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "MemoryCollection",
     },
+    text: String,
+    emotion: String,
+    tone: String,
+    caption: String,
   },
   { timestamps: true }
 );

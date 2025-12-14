@@ -181,3 +181,10 @@ export const unlockByEvent = async (req, res) => {
     message: `Unlocked ${result.modifiedCount} memories for event ${eventName}`,
   });
 };
+
+
+
+export const saveMemory = async (req, res) => {
+  const memory = await Memory.create(req.body);
+  res.json({ success: true, memory });
+};
