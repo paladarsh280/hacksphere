@@ -305,13 +305,13 @@ const Signup = () => {
         )}
 
         {/* Google Signup */}
-        <button
+        {/* <button
           onClick={handleGoogleLogin}
           className="mt-[20px] flex justify-center items-center border border-gray-300 rounded-full bg-white text-[17px] mb-5 w-80 h-11 shadow-sm"
         >
           
           Sign up with Google
-        </button>
+        </button> */}
 
         {/* Login Link */}
         <div className="flex flex-col items-center w-full mt-2">

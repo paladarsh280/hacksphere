@@ -233,14 +233,14 @@ const Login = () => {
         </div>
 
         {/* GOOGLE BUTTON */}
-        <button
+        {/* <button
           onClick={handleGoogleLogin}
           disabled={googleLoading}
           className="mt-5 flex items-center border rounded-full bg-white px-6 py-2 shadow"
         >
           
           {googleLoading ? "Please wait..." : "Sign in with Google"}
-        </button>
+        </button> */}
 
         <button
           onClick={() => navigate("/forgot-password")}
