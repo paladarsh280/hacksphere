@@ -10,7 +10,7 @@ const app = express();
 
 // === CORS: Allow only your Netlify frontend ===
 app.use(cors({
-     origin: ["http://localhost:5173", "https://togethera.netlify.app/", "https://hacksphere-e64m.onrender.com"],  // Your exact Netlify URL
+     origin: ["http://localhost:5173", "https://togethera.netlify.app", "https://hacksphere-e64m.onrender.com"],  // Your exact Netlify URL
   credentials: true                         // Enable if using cookies/auth
 }));
 
