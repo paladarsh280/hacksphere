@@ -145,7 +145,7 @@ const Signup = () => {
     if (res.data.token) {
       saveAuthToken(res.data.token);
       setMessage("Signup successful! Redirecting...");
-      setTimeout(() => navigate("/loggedlanding"), 800);
+      setTimeout(() => navigate("/memory-form"), 800);
     }
   } catch (err) {
     setMessage("Invalid OTP. Try again.");
