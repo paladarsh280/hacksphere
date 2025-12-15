@@ -467,7 +467,16 @@ formData.set("caption", selectedCaption);
             className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-semibold transition-colors"
           >
             <Star className="w-5 h-5" />
-            View My Memories
+            View your Memories
+          </button>
+        </div>
+        <div className="text-center mt-8">
+          <button
+            onClick={() => navigate("/https://collabarator.vercel.app/")}
+            className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-semibold transition-colors"
+          >
+            <Star className="w-5 h-5" />
+            want collabaration
           </button>
         </div>
       </div>
