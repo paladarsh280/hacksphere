@@ -1,4 +1,8 @@
-  TOGETHERA
+important note-in time of signup it may tak time and  in time of collabaration please refresh the page and click on create room and it may take time 
+  
+  
+  
+  TOGETHERA
 
 > **Preserve emotions. Capture moments. Unlock memories in the future.**
 >
